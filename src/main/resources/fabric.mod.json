@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "nova_cheats",
+  "version": "${version}",
+  "name": "NOVA Cheats",
+  "description": "Item browser and enchantment helper for private worlds where commands are permitted.",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.nova.cheats.NOVACheatsClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
