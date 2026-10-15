@@ -5,7 +5,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.network.chat.Component;
 
@@ -21,7 +22,7 @@ public final class EnchantmentScreen extends Screen {
     private final List<String> selected = new ArrayList<>();
     private EditBox levelBox;
     private EditBox searchBox;
-    private List<ResourceLocation> enchantments = List.of();
+    private List<Identifier> enchantments = List.of();
     private int level = 1;
     private int page = 0;
 
@@ -33,15 +34,15 @@ public final class EnchantmentScreen extends Screen {
 
     @Override
     protected void init() {
-        enchantments = BuiltInRegistries.ENCHANTMENT.keySet().stream()
-                .sorted(Comparator.comparing(ResourceLocation::toString)).toList();
+        enchantments = minecraft.level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).keySet().stream()
+                .sorted(Comparator.comparing(Identifier::toString)).toList();
         rebuildEnchantmentButtons();
     }
 
     private void buildControls() {
         levelBox = new EditBox(font, width / 2 + 90, 36, 55, 20, Component.literal("Уровень"));
         levelBox.setValue(Integer.toString(level));
-        levelBox.setFilter(s -> s.matches("\\d{0,3}"));
+        
         addRenderableWidget(levelBox);
 
         searchBox = new EditBox(font, width / 2 - 175, 36, 245, 20, Component.literal("Поиск чар"));
@@ -60,7 +61,7 @@ public final class EnchantmentScreen extends Screen {
 
         addRenderableWidget(Button.builder(Component.literal("Выбрать все"), b -> {
             selected.clear();
-            for (ResourceLocation id : enchantments) selected.add(id.toString());
+            for (Identifier id : enchantments) selected.add(id.toString());
             page = 0;
             rebuildEnchantmentButtons();
         }).bounds(width / 2 - 95, 60, 100, 20).build());
@@ -116,7 +117,7 @@ public final class EnchantmentScreen extends Screen {
         }).bounds(width / 2 + 45, height - 60, 40, 20).build());
         addRenderableWidget(Button.builder(Component.literal("Выдать предмет"), b -> giveItem())
                 .bounds(width / 2 - 75, height - 34, 150, 20).build());
-        addRenderableWidget(Button.builder(Component.literal("Назад"), b -> minecraft.setScreen(parent))
+        addRenderableWidget(Button.builder(Component.literal("Назад"), b -> minecraft.gui.setScreen(parent))
                 .bounds(width / 2 - 185, height - 34, 90, 20).build());
     }
 
@@ -143,7 +144,7 @@ public final class EnchantmentScreen extends Screen {
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         graphics.fill(0, 0, width, height, 0xB8101220);
         graphics.fill(width / 2 - 205, 12, width / 2 + 205, height - 12, 0xE51A2030);
-        graphics.text(font, "Зачарования: " + item.getDescription().getString(), width / 2 - 180, 18, 0xFFB7A2FF, true);
+        graphics.text(font, "Зачарования: " + item.getName(item.getDefaultInstance()).getString(), width / 2 - 180, 18, 0xFFB7A2FF, true);
         graphics.text(font, "Выбрано: " + selected.size() + " | Уровень: 1–255", width / 2 - 180, 68, 0xFFD0D5E5, false);
         graphics.text(font, "Для выдачи нужны права на команду /give.", width / 2 - 135, height - 77, 0xFFFFC77D, false);
         super.extractRenderState(graphics, mouseX, mouseY, delta);
