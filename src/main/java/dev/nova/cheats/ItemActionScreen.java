@@ -26,7 +26,7 @@ public final class ItemActionScreen extends Screen {
         addRenderableWidget(Button.builder(Component.literal("Настроить зачарования"), b ->
                 minecraft.gui.setScreen(new EnchantmentScreen(item, this)))
                 .bounds(width / 2 - 115, height / 2 + 12, 230, 20).build());
-        addRenderableWidget(Button.builder(Component.literal("Назад"), b -> minecraft.setScreen(parent))
+        addRenderableWidget(Button.builder(Component.literal("Назад"), b -> minecraft.gui.setScreen(parent))
                 .bounds(width / 2 - 50, height / 2 + 44, 100, 20).build());
     }
 
@@ -42,6 +42,6 @@ public final class ItemActionScreen extends Screen {
 
     @Override
     public void onClose() {
-        minecraft.setScreen(parent);
+        minecraft.gui.setScreen(parent);
     }
 }
