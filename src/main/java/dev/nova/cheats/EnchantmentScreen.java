@@ -83,7 +83,7 @@ public final class EnchantmentScreen extends Screen {
 
     private void rebuildEnchantmentButtons() {
         String currentSearch = searchBox == null ? "" : searchBox.getValue();
-        List<ResourceLocation> filtered = enchantments.stream()
+        List<Identifier> filtered = enchantments.stream()
                 .filter(id -> currentSearch.isBlank()
                         || id.toString().toLowerCase(Locale.ROOT).contains(currentSearch.toLowerCase(Locale.ROOT)))
                 .toList();
@@ -97,7 +97,7 @@ public final class EnchantmentScreen extends Screen {
         int start = page * PAGE_SIZE;
         int end = Math.min(start + PAGE_SIZE, filtered.size());
         for (int i = start; i < end; i++) {
-            ResourceLocation id = filtered.get(i);
+            Identifier id = filtered.get(i);
             int row = i - start;
             String key = id.toString();
             String label = (selected.contains(key) ? "✓ " : "+ ") + id.getPath();
@@ -152,6 +152,6 @@ public final class EnchantmentScreen extends Screen {
 
     @Override
     public void onClose() {
-        minecraft.setScreen(parent);
+        minecraft.gui.setScreen(parent);
     }
 }
