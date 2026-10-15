@@ -57,6 +57,19 @@ public final class EnchantmentScreen extends Screen {
             page = 0;
             rebuildEnchantmentButtons();
         }).bounds(width / 2 - 175, 60, 70, 20).build());
+
+        addRenderableWidget(Button.builder(Component.literal("Выбрать все"), b -> {
+            selected.clear();
+            for (ResourceLocation id : enchantments) selected.add(id.toString());
+            page = 0;
+            rebuildEnchantmentButtons();
+        }).bounds(width / 2 - 95, 60, 100, 20).build());
+
+        addRenderableWidget(Button.builder(Component.literal("Снять выбор"), b -> {
+            selected.clear();
+            page = 0;
+            rebuildEnchantmentButtons();
+        }).bounds(width / 2 + 12, 60, 100, 20).build());
     }
 
     private void readLevel() {
