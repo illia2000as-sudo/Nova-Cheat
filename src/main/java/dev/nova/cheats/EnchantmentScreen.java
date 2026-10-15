@@ -49,8 +49,7 @@ public final class EnchantmentScreen extends Screen {
         addRenderableWidget(searchBox);
 
         addRenderableWidget(Button.builder(Component.literal("Установить уровень"), b -> {
-            try { level = Math.max(1, Math.min(255, Integer.parseInt(levelBox.getValue()))); }
-            catch (NumberFormatException ignored) { level = 1; }
+            readLevel();
             levelBox.setValue(Integer.toString(level));
         }).bounds(width / 2 + 150, 36, 135, 20).build());
 
@@ -60,16 +59,26 @@ public final class EnchantmentScreen extends Screen {
         }).bounds(width / 2 - 175, 60, 70, 20).build());
     }
 
+    private void readLevel() {
+        try {
+            level = Math.max(1, Math.min(255, Integer.parseInt(levelBox.getValue()));
+        } catch (NumberFormatException ignored) {
+            level = 1;
+        }
+    }
+
     private void rebuildEnchantmentButtons() {
-        String query = searchBox == null ? "" : searchBox.getValue().toLowerCase(Locale.ROOT);
+        String currentSearch = searchBox == null ? "" : searchBox.getValue();
         List<ResourceLocation> filtered = enchantments.stream()
-                .filter(id -> query.isBlank() || id.toString().toLowerCase(Locale.ROOT).contains(query))
+                .filter(id -> currentSearch.isBlank()
+                        || id.toString().toLowerCase(Locale.ROOT).contains(currentSearch.toLowerCase(Locale.ROOT)))
                 .toList();
         int maxPage = Math.max(0, (filtered.size() - 1) / PAGE_SIZE);
         page = Math.max(0, Math.min(page, maxPage));
 
         clearWidgets();
         buildControls();
+        searchBox.setValue(currentSearch);
 
         int start = page * PAGE_SIZE;
         int end = Math.min(start + PAGE_SIZE, filtered.size());
@@ -99,22 +108,21 @@ public final class EnchantmentScreen extends Screen {
     }
 
     private void giveItem() {
-        try { level = Math.max(1, Math.min(255, Integer.parseInt(levelBox.getValue()))); }
-        catch (NumberFormatException ignored) { level = 1; }
-
+        readLevel();
         String itemId = BuiltInRegistries.ITEM.getKey(item).toString();
         if (selected.isEmpty()) {
             NOVACheatsClient.sendCommand("give @s " + itemId + " 1");
             return;
         }
-        StringBuilder command = new StringBuilder("give @s ").append(itemId)
-                .append("[minecraft:enchantments={");
+
+        StringBuilder command = new StringBuilder("give @s ")
+                .append(itemId)
+                .append("[minecraft:enchantments={levels:{");
         for (int i = 0; i < selected.size(); i++) {
             if (i > 0) command.append(",");
-            String enchantmentId = selected.get(i);
-            command.append(enchantmentId).append(":").append(level);
+            command.append("\"").append(selected.get(i)).append("\":").append(level);
         }
-        command.append("}] 1");
+        command.append("}}] 1");
         NOVACheatsClient.sendCommand(command.toString());
     }
 
