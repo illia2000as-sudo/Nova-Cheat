@@ -30,7 +30,7 @@ public final class ItemPickerScreen extends Screen {
                 .sorted(Comparator.comparing(item -> item.getDescription().getString()))
                 .toList();
         searchBox = new EditBox(font, width / 2 - 150, 42, 300, 20, Component.literal("Search"));
-        searchBox.setHint(Component.literal("Поиск предметов по названию"));
+        searchBox.setHint(Component.literal("Поиск предметов по названию или ID"));
         addRenderableWidget(searchBox);
         addRenderableWidget(Button.builder(Component.literal("Найти"), b -> {
             page = 0;
@@ -51,9 +51,11 @@ public final class ItemPickerScreen extends Screen {
     }
 
     private void rebuildButtons() {
+        String currentSearch = searchBox == null ? "" : searchBox.getValue();
         clearWidgets();
         searchBox = new EditBox(font, width / 2 - 150, 42, 300, 20, Component.literal("Search"));
-        searchBox.setHint(Component.literal("Поиск предметов по названию"));
+        searchBox.setHint(Component.literal("Поиск предметов по названию или ID"));
+        searchBox.setValue(currentSearch);
         addRenderableWidget(searchBox);
         addRenderableWidget(Button.builder(Component.literal("Найти"), b -> {
             page = 0;
