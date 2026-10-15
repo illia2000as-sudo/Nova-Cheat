@@ -27,7 +27,7 @@ public final class ItemPickerScreen extends Screen {
     protected void init() {
         allItems = BuiltInRegistries.ITEM.stream()
                 .filter(item -> !item.getDefaultInstance().isEmpty())
-                .sorted(Comparator.comparing(item -> item.getDescription().getString()))
+                .sorted(Comparator.comparing(item -> item.getName(item.getDefaultInstance()).getString()))
                 .toList();
         searchBox = new EditBox(font, width / 2 - 150, 42, 300, 20, Component.literal("Search"));
         searchBox.setHint(Component.literal("Поиск предметов по названию или ID"));
@@ -74,7 +74,7 @@ public final class ItemPickerScreen extends Screen {
             String label = item.getDescription().getString();
             if (label.length() > 22) label = label.substring(0, 19) + "...";
             addRenderableWidget(Button.builder(Component.literal(label), b ->
-                    minecraft.setScreen(new ItemActionScreen(item, this)))
+                    minecraft.gui.setScreen(new ItemActionScreen(item, this)))
                     .bounds(x, y, buttonW, buttonH).build());
         }
         addRenderableWidget(Button.builder(Component.literal("◀ Назад"), b -> {
