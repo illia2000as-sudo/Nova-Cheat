@@ -42,7 +42,7 @@ public final class ItemPickerScreen extends Screen {
     private void updateItems() {
         String query = searchBox == null ? "" : searchBox.getValue().trim().toLowerCase(Locale.ROOT);
         filteredItems = allItems.stream().filter(item -> {
-            String name = item.getDescription().getString().toLowerCase(Locale.ROOT);
+            String name = item.getName(item.getDefaultInstance()).getString().toLowerCase(Locale.ROOT);
             String id = BuiltInRegistries.ITEM.getKey(item).toString().toLowerCase(Locale.ROOT);
             return query.isBlank() || name.contains(query) || id.contains(query);
         }).toList();
@@ -71,7 +71,7 @@ public final class ItemPickerScreen extends Screen {
             int n = i - start;
             int x = left + (n % columns) * (buttonW + gap);
             int y = 78 + (n / columns) * 25;
-            String label = item.getDescription().getString();
+            String label = item.getName(item.getDefaultInstance()).getString();
             if (label.length() > 22) label = label.substring(0, 19) + "...";
             addRenderableWidget(Button.builder(Component.literal(label), b ->
                     minecraft.gui.setScreen(new ItemActionScreen(item, this)))
@@ -103,6 +103,6 @@ public final class ItemPickerScreen extends Screen {
 
     @Override
     public void onClose() {
-        minecraft.setScreen(null);
+        minecraft.gui.setScreen(null);
     }
 }
