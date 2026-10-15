@@ -61,7 +61,7 @@ public final class EnchantmentScreen extends Screen {
 
     private void readLevel() {
         try {
-            level = Math.max(1, Math.min(255, Integer.parseInt(levelBox.getValue()));
+            level = Math.max(1, Math.min(255, Integer.parseInt(levelBox.getValue())));
         } catch (NumberFormatException ignored) {
             level = 1;
         }
